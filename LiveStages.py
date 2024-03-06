@@ -1,6 +1,5 @@
 import os
 import subprocess
-from heapq import heapify, heappush, heappop
 
 from Utils import Utils
 
@@ -21,9 +20,8 @@ class LiveStages:
         self.modkit_files_directory = self.output_path + "/modkit_files/"
         self.bed_files_directory = self.output_path + "/bed_files/"
         self.sturgeon_output_directory = self.output_path + "/sturgeon_output/"
-        self.sturgeon_output_count = last_k_predictions
-        self.heap = []
-        heapify(self.heap)
+        self.sturgeon_max_output_count = last_k_predictions
+        self.sturgeon_output_count = 0
 
     def live_basecalling_with_dorado(self, new_files):
         """
@@ -61,7 +59,7 @@ class LiveStages:
         :return: a new modkit txt file added to the intermediate modkit_files_directory
         """
 
-        latest_bam_file = self.utils.get_latest_file(self.bam_files_directory)
+        latest_bam_file = self.utils.get_latest_file(self.bam_files_directory, extension='.bam')
 
         print("Converting latest bam file(s) to txt files using Modkit...\n")
 
@@ -102,8 +100,12 @@ class LiveStages:
                         "-o", self.sturgeon_output_directory, "--model-files", self.sturgeon_model_path,
                         "--plot-results"], check=True)
 
+        latest_files = self.utils.get_latest_files(self.sturgeon_output_directory, num_files=2)
+        self.utils.rename_files(latest_files, self.sturgeon_output_count)
+        self.sturgeon_output_count += 1
+
         # Maintain k latest sturgeon predictions in the output folder
-        if len(os.listdir(self.sturgeon_output_count)) > self.sturgeon_output_count:
+        if len(os.listdir(self.sturgeon_output_directory)) > (self.sturgeon_max_output_count * 2):
             self.utils.delete_oldest_files(self.sturgeon_output_directory, num_files_to_delete=2)
 
         print(self.stage_separator)

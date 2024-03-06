@@ -1,6 +1,4 @@
-import glob
 import os
-import argparse
 import shutil
 import time
 
@@ -28,13 +26,20 @@ class Utils:
         else:
             print(f"\nDirectory {path} does not exist\n")
 
-    def get_latest_file(self, path):
+    def get_latest_file(self, path, extension):
         all_files = os.listdir(path)
-        files = [os.path.join(path, f) for f in all_files]
+        files = [os.path.join(path, f) for f in all_files if f.endswith(extension)]
         if not files:
             return None
         latest_file = max(files, key=os.path.getmtime)
         return latest_file
+
+    def get_latest_files(self, path, num_files):
+        all_files = os.listdir(path)
+        files = [os.path.join(path, f) for f in all_files]
+        files.sort(key=os.path.getmtime, reverse=True)
+        latest_files = files[:num_files]
+        return latest_files
 
     def delete_oldest_files(self, path, num_files_to_delete):
         all_files = os.listdir(path)
@@ -53,6 +58,16 @@ class Utils:
         new_files = current_files - existing_files
         return new_files, current_files
 
+    def rename_files(self, files, file_num):
+        for file in files:
+            file_name, extension = os.path.splitext(file)
+            file_name += "_" + str(file_num)
+            new_file = file_name + extension
+            try:
+                os.rename(file, new_file)
+            except OSError as e:
+                print("Following error occurred: {e}")
+
     def copy_pod5_files_to_intermediate_folder(self, input_path, pod5_directory_path, new_files):
         # if previous set of pod5 files exist then delete them
         self.delete_directory(pod5_directory_path)
@@ -64,97 +79,3 @@ class Utils:
         new_files_paths = [input_path + "/" + new_file for new_file in new_files if new_file != ".DS_Store"]
         for new_files_path in new_files_paths:
             shutil.copy2(new_files_path, pod5_directory_path)
-
-    def parse_command_inputs(self):
-        # Parse inputs from the CLI command
-        parser = argparse.ArgumentParser(prog="Sturgeon Pipeline",
-                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-        parser.set_defaults(func=lambda _: parser.print_help())
-
-        parser.add_argument(
-            "--input_path",
-            type=str,
-            required=True,
-            help='Path to directory which contain nanopore sequencing reads (fast5/pod5 files)'
-        )
-        parser.add_argument(
-            "--output_path",
-            type=str,
-            required=True,
-            help='Path to directory where output of intermediate stages and final prediction output will be stored'
-        )
-        parser.add_argument(
-            "--dorado_path",
-            type=str,
-            required=True,
-            help='Path to directory where dorado is downloaded'
-        )
-        parser.add_argument(
-            "--sturgeon_model_path",
-            type=str,
-            required=True,
-            help='Path to directory where the Sturgeon model is downloaded'
-        )
-        parser.add_argument(
-            '--single_to_multi_read_fast5',
-            action='store_true',
-            help='Set the flag to true to convert single-read fast5 files to multi-read fast5 files'
-        )
-        parser.add_argument(
-            '--convert_to_pod5',
-            action='store_true',
-            help='Set the flag to true to convert fast5 files to pod5 files'
-        )
-        parser.add_argument(
-            '--perform_basecalling',
-            action='store_true',
-            help='Set the flag to true to perform basecalling on pod5 files using Dorado'
-        )
-        parser.add_argument(
-            '--file_wait_time',
-            type=int,
-            default=300,
-            help='Set the sleep time between consecutive checks for new fast5 files (sequencing reads) in input folder'
-        )
-        parser.add_argument(
-            '--last_k_predictions',
-            type=int,
-            default=1,
-            help='Set the number of latest Sturgeon predictions (k) you wish to maintain in the output folder (saves last k Sturgeon predictions)'
-        )
-
-        args = parser.parse_args()
-        return args
-
-    def get_file_transfer_inputs(self):
-        parser = argparse.ArgumentParser(prog="File transfer script",
-                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-        parser.set_defaults(func=lambda _: parser.print_help())
-        parser.add_argument(
-            "--input_path",
-            type=str,
-            required=True,
-            help='Path to directory which contain nanopore sequencing reads (fast5 files)'
-        )
-        parser.add_argument(
-            "--output_path",
-            type=str,
-            required=True,
-            help='Path to directory in which fast5 files will be transferred and will serve as input folder for Sturgeon pipeline'
-        )
-        parser.add_argument(
-            "--batch_size",
-            type=int,
-            default=1000,
-            help='Number of files to be transferred in each batch'
-        )
-        parser.add_argument(
-            "--wait_time",
-            type=int,
-            default=10,
-            help='Wait time in seconds between each batch file transfer'
-        )
-        args = parser.parse_args()
-        return args

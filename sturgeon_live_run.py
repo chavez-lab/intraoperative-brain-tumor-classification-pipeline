@@ -1,12 +1,14 @@
 import glob
 import pandas as pd
 
+from InputUtils import InputUtils
 from LiveStages import *
 
 
 def main():
     utils = Utils()
-    cli_inputs = utils.parse_command_inputs()
+    input_utils = InputUtils()
+    cli_inputs = input_utils.parse_command_inputs()
 
     stages = LiveStages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path,
                         cli_inputs.sturgeon_model_path, cli_inputs.last_k_predictions)
@@ -50,7 +52,8 @@ def main():
             break
 
     if sturgeon_output_directory != "":
-        output_csv = glob.glob(sturgeon_output_directory + "/*.csv")[0]
+        output_csv = utils.get_latest_file(sturgeon_output_directory, extension='.csv')
+        print("output_file: ", output_csv, "\n")
         output_df = pd.read_csv(output_csv)
         output_df = output_df.drop('number_probes', axis=1)
         max_column = output_df.apply(lambda row: row.idxmax(), axis=1)[0]

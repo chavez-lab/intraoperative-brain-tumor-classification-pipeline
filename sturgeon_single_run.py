@@ -1,12 +1,13 @@
-from Stages import *
+from InputUtils import InputUtils
+from SingleRunStages import *
 
 
 def main():
     print("\nStarting Sturgeon Single Run Test Pipeline...\n")
 
     # Get input arguments
-    utils = Utils()
-    cli_inputs = utils.parse_command_inputs()
+    input_utils = InputUtils()
+    cli_inputs = input_utils.parse_command_inputs()
 
     # Execute stages of pipeline
     stages = Stages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path)

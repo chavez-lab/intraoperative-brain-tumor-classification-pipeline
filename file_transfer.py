@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 
+from InputUtils import InputUtils
 from Utils import Utils
 
 
@@ -9,7 +10,8 @@ def main():
     print("\nStarting Files Transfer...\n")
 
     utils = Utils()
-    cli_inputs = utils.get_file_transfer_inputs()
+    input_utils = InputUtils()
+    cli_inputs = input_utils.get_file_transfer_inputs()
 
     input_files = os.listdir(cli_inputs.input_path)
     print('\nFound {} files in {} folder\n'.format(len(input_files), cli_inputs.input_path))

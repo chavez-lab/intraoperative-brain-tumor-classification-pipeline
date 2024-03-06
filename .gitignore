@@ -1,0 +1,5 @@
+.idea/
+build/
+dist/
+sturgeon_pipeline.egg-info/
+.DS_Store
