@@ -53,7 +53,7 @@ def main():
 
     if sturgeon_output_directory != "":
         output_csv = utils.get_latest_file(sturgeon_output_directory, extension='.csv')
-        print("output_file: ", output_csv, "\n")
+        print("Output File: ", output_csv, "\n")
         output_df = pd.read_csv(output_csv)
         output_df = output_df.drop('number_probes', axis=1)
         max_column = output_df.apply(lambda row: row.idxmax(), axis=1)[0]
