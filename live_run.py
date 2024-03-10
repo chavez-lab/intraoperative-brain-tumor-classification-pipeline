@@ -11,7 +11,7 @@ def main():
     cli_inputs = input_utils.parse_command_inputs()
 
     stages = LiveStages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path,
-                        cli_inputs.sturgeon_model_path, cli_inputs.last_k_predictions)
+                        cli_inputs.model_path, cli_inputs.model_type, cli_inputs.last_k_predictions)
 
     print(stages.stage_separator)
     print("\nStarting Sturgeon Live Test Pipeline...\n")

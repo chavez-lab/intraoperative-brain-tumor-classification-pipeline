@@ -5,11 +5,12 @@ from Utils import Utils
 
 
 class LiveStages:
-    def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, last_k_predictions):
+    def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type,
+                 last_k_predictions):
         self.input_path = input_path
         self.output_path = output_path
         self.dorado_path = dorado_path
-        self.sturgeon_model_path = sturgeon_model_path
+        self.sturgeon_model = sturgeon_model_path + "/" + sturgeon_model_type + ".zip"
         self.utils = Utils()
         self.stage_separator = self.utils.stage_separator
         self.bam_file_count = 0
@@ -97,7 +98,7 @@ class LiveStages:
         print("Running Sturgeon Predict...\n")
 
         subprocess.run(["sturgeon", "predict", "-i", "/Users/chinmaysharma/Documents/sturgeon/testing/sample_bed",
-                        "-o", self.sturgeon_output_directory, "--model-files", self.sturgeon_model_path,
+                        "-o", self.sturgeon_output_directory, "--model-files", self.sturgeon_model,
                         "--plot-results"], check=True)
 
         latest_files = self.utils.get_latest_files(self.sturgeon_output_directory, num_files=2)

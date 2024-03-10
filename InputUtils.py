@@ -31,10 +31,16 @@ class InputUtils:
             help='Path to directory where dorado is downloaded'
         )
         parser.add_argument(
-            "--sturgeon_model_path",
+            "--model_path",
             type=str,
             required=True,
             help='Path to directory where the Sturgeon model is downloaded'
+        )
+        parser.add_argument(
+            "--model_type",
+            type=str,
+            default="general",
+            help='Select between general and brainstem sturgeon model'
         )
         parser.add_argument(
             '--single_to_multi_read_fast5',
