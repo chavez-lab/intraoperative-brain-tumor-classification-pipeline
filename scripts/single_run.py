@@ -1,5 +1,5 @@
-from InputUtils import InputUtils
-from SingleRunStages import *
+from utils.InputUtils import InputUtils
+from stages.SingleRunStages import *
 
 
 def main():

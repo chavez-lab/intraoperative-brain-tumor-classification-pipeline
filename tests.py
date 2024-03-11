@@ -1,5 +1,4 @@
-from Utils import Utils
-import subprocess
+from utils.Utils import Utils
 
 
 def main():

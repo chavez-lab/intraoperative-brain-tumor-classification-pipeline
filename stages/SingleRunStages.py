@@ -1,8 +1,6 @@
-import os.path
-import shutil
 import subprocess
 
-from Utils import Utils
+from utils.Utils import Utils
 
 
 class Stages:

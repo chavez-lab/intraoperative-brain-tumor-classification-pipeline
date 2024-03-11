@@ -2,8 +2,8 @@ import os
 import shutil
 import time
 
-from InputUtils import InputUtils
-from Utils import Utils
+from utils.InputUtils import InputUtils
+from utils.Utils import Utils
 
 
 def main():
