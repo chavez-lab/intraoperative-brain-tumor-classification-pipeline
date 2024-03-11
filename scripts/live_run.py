@@ -9,7 +9,7 @@ from utils.Utils import Utils
 from stages.LiveStages import LiveStages
 
 
-def main():
+def run():
     utils = Utils()
     input_utils = InputUtils()
     cli_inputs = input_utils.parse_command_inputs()
@@ -61,4 +61,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

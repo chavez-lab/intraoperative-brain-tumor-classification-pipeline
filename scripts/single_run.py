@@ -2,7 +2,7 @@ from utils.InputUtils import InputUtils
 from stages.SingleRunStages import *
 
 
-def main():
+def run():
     print("\nStarting Sturgeon Single Run Test Pipeline...\n")
 
     # Get input arguments
@@ -33,4 +33,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

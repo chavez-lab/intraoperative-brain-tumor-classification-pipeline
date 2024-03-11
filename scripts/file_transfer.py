@@ -9,7 +9,7 @@ from utils.InputUtils import InputUtils
 from utils.Utils import Utils
 
 
-def main():
+def run():
     print("\nStarting Files Transfer...\n")
 
     utils = Utils()
@@ -36,4 +36,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()
