@@ -23,7 +23,7 @@ def main():
 
     print('Watching the following folder: {}\n'.format(cli_inputs.input_path))
 
-    sturgeon_output_directory = ""
+    sturgeon_output_directory = utils.empty_string
     existing_files_input_folder = set()
     while True:
         print("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
@@ -32,16 +32,6 @@ def main():
                                                                                      cli_inputs.file_wait_time)
 
         if new_files_input_folder:
-            '''
-            converted_single_to_multi_read_fast5 = False
-            if cli_inputs.single_to_multi_read_fast5:
-                stages.convert_to_multi_read_fast5()
-                converted_single_to_multi_read_fast5 = True
-
-            if cli_inputs.convert_to_pod5:
-                stages.convert_to_pod5(converted_single_to_multi_read_fast5)
-            '''
-
             latest_bam_file_path = ""
             if cli_inputs.perform_basecalling:
                 latest_bam_file_path = stages.live_basecalling_with_dorado(new_files_input_folder)
@@ -55,7 +45,7 @@ def main():
             print(stages.stage_separator)
             break
 
-    if sturgeon_output_directory != "":
+    if sturgeon_output_directory != utils.empty_string:
         output_csv = utils.get_latest_file(sturgeon_output_directory, extension='.csv')
         print("Output File: ", output_csv, "\n")
         output_df = pd.read_csv(output_csv)

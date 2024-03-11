@@ -5,6 +5,7 @@ import time
 
 class Utils:
     stage_separator = "\n##############################################################################################################\n"
+    empty_string = ""
 
     def __init__(self):
         pass
