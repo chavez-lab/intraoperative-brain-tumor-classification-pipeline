@@ -1,9 +1,9 @@
+import os
 import pandas as pd
-import importlib
-import utils
-import stages
-importlib.reload(utils)
-importlib.reload(stages)
+import sys
+
+sys.path.append(os.path.dirname(sys.path[0]))
+
 from utils.InputUtils import InputUtils
 from utils.Utils import Utils
 from stages.LiveStages import LiveStages

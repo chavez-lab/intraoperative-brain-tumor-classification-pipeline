@@ -1,6 +1,9 @@
 import os
 import shutil
 import time
+import sys
+
+sys.path.append(os.path.dirname(sys.path[0]))
 
 from utils.InputUtils import InputUtils
 from utils.Utils import Utils

@@ -5,9 +5,15 @@ Clone this repository to make the pipeline available on local system:
 git clone https://github.com/chavez-lab/intraoperative-brain-tumor-classification-pipeline.git
 ```
 
+Run setup.py file to install custom packages:
+```commandline
+cd intraoperative-brain-tumor-classification-pipeline
+python3 setup.py install
+```
+
 Command to run the pipeline:
 ```commandline
-python3 <path_to_pipeline_directory>/live_run.py \
+python3 <path_to_scripts_directory>/live_run.py \
 --input_path <path_to_pod5_files_on_local_system> \
 --output_path <path_to_output_folder_on_local_system> \
 --dorado_path <path_to_dorado_basecaller_on_local_system> \
