@@ -18,10 +18,10 @@ def run():
                         cli_inputs.model_path, cli_inputs.model_type, cli_inputs.last_k_predictions)
 
     print(stages.stage_separator)
-    print("\nStarting Sturgeon Live Test Pipeline...\n")
+    print("\nStarting Intraoperative Classification Pipeline...\n")
     print(stages.stage_separator)
 
-    print('Watching the following folder: {}\n'.format(cli_inputs.input_path))
+    print('Watching the following folder for input: {}\n'.format(cli_inputs.input_path))
 
     sturgeon_output_directory = utils.empty_string
     existing_files_input_folder = set()
@@ -57,7 +57,7 @@ def run():
         print("\nClassification Confidence Score: ", max_score)
         print(stages.stage_separator)
 
-    print("\nCompleted Sturgeon Live Test Pipeline!!!\n")
+    print("\nCompleted Intraoperative Classification Pipeline!!!\n")
 
 
 if __name__ == "__main__":
