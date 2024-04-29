@@ -6,11 +6,12 @@ from utils.Utils import Utils
 
 class LiveStages:
     def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type,
-                 last_k_predictions):
+                 reference_genome_path, last_k_predictions):
         self.input_path = input_path
         self.output_path = output_path
         self.dorado_path = dorado_path
         self.sturgeon_model = sturgeon_model_path + "/" + sturgeon_model_type + ".zip"
+        self.reference_genome_path = reference_genome_path
         self.utils = Utils()
         self.stage_separator = self.utils.stage_separator
         self.bam_file_count = 0
@@ -37,17 +38,18 @@ class LiveStages:
         pod5_files_count = os.listdir(pod5_folder_path)
 
         print("Basecalling with Dorado on {} pod5 files...\n".format(pod5_files_count))
-        print("Downloading relevant models for Dorado")
-        subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v4.1.0"], check=True)
-        subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v4.1.0_5mCG_5hmCG@v2"], check=True)
+        # print("Downloading relevant models for Dorado")
+        # subprocess.run([self.dorado_path, "download", "--model",
+                        # "dna_r10.4.1_e8.2_400bps_hac@v4.1.0"], check=True)
+        # subprocess.run([self.dorado_path, "download", "--model",
+                        # "dna_r10.4.1_e8.2_400bps_hac@v4.1.0_5mCG_5hmCG@v2"], check=True)
 
         self.utils.create_directory(path=self.bam_files_directory)
         bam_files_path = self.bam_files_directory + "basecalled_" + str(self.bam_file_count) + ".bam"
         self.bam_file_count += 1
 
-        basecall_cmd = " ".join([self.dorado_path, "basecaller", "hac,5mCG_5hmCG", pod5_folder_path, ">", bam_files_path])
+        basecall_cmd = " ".join([self.dorado_path, "basecaller", "hac,5mCG_5hmCG", pod5_folder_path, "--reference",
+                                 self.reference_genome_path, ">", bam_files_path])
         subprocess.run(basecall_cmd, shell=True, check=True)
 
         print(self.stage_separator)
@@ -97,7 +99,7 @@ class LiveStages:
 
         print("Running Sturgeon Predict...\n")
 
-        subprocess.run(["sturgeon", "predict", "-i", "/Users/chinmaysharma/Documents/sturgeon/testing/sample_bed",
+        subprocess.run(["sturgeon", "predict", "-i", self.bed_files_directory,
                         "-o", self.sturgeon_output_directory, "--model-files", self.sturgeon_model,
                         "--plot-results"], check=True)
 
