@@ -14,8 +14,8 @@ def run():
     input_utils = InputUtils()
     cli_inputs = input_utils.parse_command_inputs()
 
-    stages = LiveStages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path,
-                        cli_inputs.model_path, cli_inputs.model_type, cli_inputs.reference_path,
+    stages = LiveStages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path, cli_inputs.model_path,
+                        cli_inputs.model_type, cli_inputs.reference_path, cli_inputs.modkit_path,
                         cli_inputs.last_k_predictions)
 
     print(stages.stage_separator)

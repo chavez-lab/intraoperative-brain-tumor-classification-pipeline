@@ -6,12 +6,13 @@ from utils.Utils import Utils
 
 class LiveStages:
     def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type,
-                 reference_genome_path, last_k_predictions):
+                 reference_genome_path, modkit_path, last_k_predictions):
         self.input_path = input_path
         self.output_path = output_path
         self.dorado_path = dorado_path
         self.sturgeon_model = sturgeon_model_path + "/" + sturgeon_model_type + ".zip"
         self.reference_genome_path = reference_genome_path
+        self.modkit_path = modkit_path
         self.utils = Utils()
         self.stage_separator = self.utils.stage_separator
         self.bam_file_count = 0
@@ -69,9 +70,10 @@ class LiveStages:
         self.utils.create_directory(self.modkit_files_directory)
         modkit_txt_files_path = self.modkit_files_directory + "modkit_" + str(self.modkit_file_count) + ".txt"
         self.modkit_file_count += 1
+        modkit_path = self.modkit_path + "/modkit" if self.modkit_path != "" else "modkit"
 
         subprocess.run(
-            ["modkit", "extract", latest_bam_file, modkit_txt_files_path], check=True)
+            [modkit_path, "extract", latest_bam_file, modkit_txt_files_path], check=True)
 
         print(self.stage_separator)
 
