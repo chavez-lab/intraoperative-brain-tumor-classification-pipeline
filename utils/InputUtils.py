@@ -49,6 +49,12 @@ class InputUtils:
             help='Path to the Telomere-to-Telomere reference genome (CHM13v2) file (.fa.gz extension)'
         )
         parser.add_argument(
+            "--modkit_path",
+            type=str,
+            default="",
+            help='Path to directory where modkit is downloaded'
+        )
+        parser.add_argument(
             '--single_to_multi_read_fast5',
             action='store_true',
             help='Set the flag to true to convert single-read fast5 files to multi-read fast5 files'
