@@ -9,6 +9,12 @@ from utils.InputUtils import InputUtils
 from utils.Utils import Utils
 
 
+def sort_key(file_name):
+    parts = file_name.split("_")
+    file_number = int(parts[-1].split(".")[0])
+    return -file_number
+
+
 def run():
 
     utils = Utils()
@@ -19,7 +25,7 @@ def run():
     print("\nStarting Files Transfer...\n")
     print(utils.stage_separator)
 
-    input_files = os.listdir(cli_inputs.input_path)
+    input_files = sorted(os.listdir(cli_inputs.input_path), key=sort_key)
     print('\nFound {} files in {} folder\n'.format(len(input_files), cli_inputs.input_path))
     utils.create_directory(cli_inputs.output_path)
     print(utils.stage_separator)
