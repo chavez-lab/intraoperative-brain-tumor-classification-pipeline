@@ -21,6 +21,8 @@ Download the Sturgeon model: [General](https://www.dropbox.com/s/yzca4exl40x9ukw
 
 Download pre-compiled binaries for [Dorado](https://github.com/nanoporetech/dorado) and [Modkit](https://github.com/nanoporetech/modkit/releases).
 
+Download the [Telomere-to-Telomere reference genome (CHM13v2)](https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz).
+
 Run setup.py file to install custom packages:
 ```commandline
 cd intraoperative-brain-tumor-classification-pipeline
