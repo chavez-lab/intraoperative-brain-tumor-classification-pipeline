@@ -5,6 +5,22 @@ Clone this repository to make the pipeline available on local system:
 git clone https://github.com/chavez-lab/intraoperative-brain-tumor-classification-pipeline.git
 ```
 
+Clone and install Sturgeon
+```commandline
+git clone https://github.com/marcpaga/sturgeon
+
+cd sturgeon
+
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install --upgrade pip
+pip3 install . --no-cache-dir
+```
+
+Download the Sturgeon model: [General](https://www.dropbox.com/s/yzca4exl40x9ukw/general.zip?dl=0) or [Brainstem](https://www.dropbox.com/s/55hypw7i8tidr0a/brainstem.zip?dl=0)
+
+Download pre-compiled binaries for [Dorado](https://github.com/nanoporetech/dorado) and [Modkit](https://github.com/nanoporetech/modkit/releases).
+
 Run setup.py file to install custom packages:
 ```commandline
 cd intraoperative-brain-tumor-classification-pipeline
