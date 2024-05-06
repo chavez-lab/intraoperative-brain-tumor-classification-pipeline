@@ -1,5 +1,8 @@
 import os
 import subprocess
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 from utils.Utils import Utils
 
@@ -38,8 +41,8 @@ class LiveStages:
         self.utils.copy_pod5_files_to_intermediate_folder(self.input_path, pod5_folder_path, new_files)
         pod5_files_count = os.listdir(pod5_folder_path)
 
-        print("Basecalling with Dorado on {} pod5 files...\n".format(pod5_files_count))
-        # print("Downloading relevant models for Dorado")
+        logging.info("Basecalling with Dorado on {} pod5 files...\n".format(pod5_files_count))
+        # logging.info("Downloading relevant models for Dorado")
         # subprocess.run([self.dorado_path, "download", "--model",
                         # "dna_r10.4.1_e8.2_400bps_hac@v4.1.0"], check=True)
         # subprocess.run([self.dorado_path, "download", "--model",
@@ -53,7 +56,7 @@ class LiveStages:
                                  self.reference_genome_path, ">", bam_files_path])
         subprocess.run(basecall_cmd, shell=True, check=True)
 
-        print(self.stage_separator)
+        logging.info(self.stage_separator)
         return bam_files_path
 
     def live_convert_bam_files_to_modkit_txt(self, latest_bam_file_path):
@@ -65,7 +68,7 @@ class LiveStages:
 
         latest_bam_file = self.utils.get_latest_file(self.bam_files_directory, extension='.bam')
 
-        print("Converting latest bam file(s) to txt files using Modkit...\n")
+        logging.info("Converting latest bam file(s) to txt files using Modkit...\n")
 
         self.utils.create_directory(self.modkit_files_directory)
         modkit_txt_files_path = self.modkit_files_directory + "modkit_" + str(self.modkit_file_count) + ".txt"
@@ -75,7 +78,7 @@ class LiveStages:
         subprocess.run(
             [modkit_path, "extract", latest_bam_file, modkit_txt_files_path], check=True)
 
-        print(self.stage_separator)
+        logging.info(self.stage_separator)
 
     def live_convert_modkit_txt_to_bed(self):
         """
@@ -83,7 +86,7 @@ class LiveStages:
         :return: single bed file in the intermediate bed_files_directory
         """
 
-        print("Converting modkit txt files to bed files using inputtobed...\n")
+        logging.info("Converting modkit txt files to bed files using inputtobed...\n")
 
         self.utils.delete_directory(self.bed_files_directory)
         self.utils.create_directory(self.bed_files_directory)
@@ -91,7 +94,7 @@ class LiveStages:
         subprocess.run(["sturgeon", "inputtobed", "-i", self.modkit_files_directory, "-o",
                         self.bed_files_directory, "-s", "modkit"], check=True)
 
-        print(self.stage_separator)
+        logging.info(self.stage_separator)
 
     def run_sturgeon_predict(self):
         """
@@ -99,7 +102,7 @@ class LiveStages:
         :return: plots and csv file containing classification confidence score
         """
 
-        print("Running Sturgeon Predict...\n")
+        logging.info("Running Sturgeon Predict...\n")
 
         subprocess.run(["sturgeon", "predict", "-i", self.bed_files_directory,
                         "-o", self.sturgeon_output_directory, "--model-files", self.sturgeon_model,
@@ -113,5 +116,5 @@ class LiveStages:
         if len(os.listdir(self.sturgeon_output_directory)) > (self.sturgeon_max_output_count * 2):
             self.utils.delete_oldest_files(self.sturgeon_output_directory, num_files_to_delete=2)
 
-        print(self.stage_separator)
+        logging.info(self.stage_separator)
         return self.sturgeon_output_directory

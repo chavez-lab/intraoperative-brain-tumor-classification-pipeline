@@ -1,7 +1,9 @@
 import os
 import pandas as pd
 import sys
+import logging
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 sys.path.append(os.path.dirname(sys.path[0]))
 
 from utils.InputUtils import InputUtils
@@ -18,16 +20,16 @@ def run():
                         cli_inputs.model_type, cli_inputs.reference_path, cli_inputs.modkit_path,
                         cli_inputs.last_k_predictions)
 
-    print(stages.stage_separator)
-    print("\nStarting Intraoperative Classification Pipeline...\n")
-    print(stages.stage_separator)
+    logging.info(stages.stage_separator)
+    logging.info("\nStarting Intraoperative Classification Pipeline...\n")
+    logging.info(stages.stage_separator)
 
-    print('Watching the following folder for input: {}\n'.format(cli_inputs.input_path))
+    logging.info('Watching the following folder for input: {}\n'.format(cli_inputs.input_path))
 
     sturgeon_output_directory = utils.empty_string
     existing_files_input_folder = set()
     while True:
-        print("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
+        logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
         new_files_input_folder, existing_files_input_folder = utils.new_file_checker(cli_inputs.input_path,
                                                                                      existing_files_input_folder,
                                                                                      cli_inputs.file_wait_time)
@@ -42,23 +44,23 @@ def run():
             sturgeon_output_directory = stages.run_sturgeon_predict()
 
         else:
-            print("\nNo new sequencing read detected. Stopping execution...\n")
-            print(stages.stage_separator)
+            logging.info("\nNo new sequencing read detected. Stopping execution...\n")
+            logging.info(stages.stage_separator)
             break
 
     if sturgeon_output_directory != utils.empty_string:
         output_csv = utils.get_latest_file(sturgeon_output_directory, extension='.csv')
-        print("Output File: ", output_csv, "\n")
+        logging.info("Output File: ", output_csv, "\n")
         output_df = pd.read_csv(output_csv)
         output_df = output_df.drop('number_probes', axis=1)
         max_column = output_df.apply(lambda row: row.idxmax(), axis=1)[0]
         max_score = output_df.max(axis=1)[0]
-        print("Final Prediction: \n")
-        print("Tumor Type: ", max_column)
-        print("\nClassification Confidence Score: ", max_score)
-        print(stages.stage_separator)
+        logging.info("Final Prediction: \n")
+        logging.info("Tumor Type: ", max_column)
+        logging.info("\nClassification Confidence Score: ", max_score)
+        logging.info(stages.stage_separator)
 
-    print("\nCompleted Intraoperative Classification Pipeline!!!\n")
+    logging.info("\nCompleted Intraoperative Classification Pipeline!!!\n")
 
 
 if __name__ == "__main__":
