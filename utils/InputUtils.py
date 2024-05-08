@@ -81,6 +81,12 @@ class InputUtils:
             default=1,
             help='Set the number of latest Sturgeon predictions (k) you wish to maintain in the output folder (saves last k Sturgeon predictions)'
         )
+        parser.add_argument(
+            '--max_wait_runs',
+            type=int,
+            default=1,
+            help='Set the number of maximum runs to wait before stopping the pipeline'
+        )
 
         args = parser.parse_args()
         return args

@@ -27,6 +27,7 @@ def run():
     logging.info('Watching the following folder for input: {}\n'.format(cli_inputs.input_path))
 
     sturgeon_output_directory = utils.empty_string
+    pipeline_run_count = 0
     existing_files_input_folder = set()
     while True:
         logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
@@ -42,7 +43,8 @@ def run():
             stages.live_convert_bam_files_to_modkit_txt(latest_bam_file_path)
             stages.live_convert_modkit_txt_to_bed()
             sturgeon_output_directory = stages.run_sturgeon_predict()
-
+        elif pipeline_run_count < cli_inputs.max_wait_runs:
+            pipeline_run_count += 1
         else:
             logging.info("\nNo new sequencing read detected. Stopping execution...\n")
             logging.info(stages.stage_separator)
