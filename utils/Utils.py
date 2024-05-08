@@ -1,6 +1,9 @@
 import os
 import shutil
 import time
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Utils:
@@ -13,19 +16,19 @@ class Utils:
     def create_directory(self, path):
         if not os.path.exists(path):
             os.makedirs(path)
-            print(f"\nDirectory {path} created successfully\n")
+            logging.info(f"\nDirectory {path} created successfully\n")
         else:
-            print(f"\nDirectory {path} already exists\n")
+            logging.info(f"\nDirectory {path} already exists\n")
 
     def delete_directory(self, path):
         if os.path.exists(path):
             try:
                 shutil.rmtree(path)
-                print(f"\nDirectory {path} deleted successfully\n")
+                logging.info(f"\nDirectory {path} deleted successfully\n")
             except OSError:
-                print(f"\nError while deleting {path}\n")
+                logging.error(f"\nError while deleting {path}\n")
         else:
-            print(f"\nDirectory {path} does not exist\n")
+            logging.info(f"\nDirectory {path} does not exist\n")
 
     def get_latest_file(self, path, extension):
         all_files = os.listdir(path)
@@ -51,7 +54,7 @@ class Utils:
             try:
                 os.remove(file_to_delete)
             except OSError:
-                print("\nError while deleting old sturgeon output files.\n")
+                logging.error("\nError while deleting old sturgeon output files.\n")
 
     def new_file_checker(self, input_folder_path, existing_files, wait_time):
         time.sleep(wait_time)
@@ -67,7 +70,7 @@ class Utils:
             try:
                 os.rename(file, new_file)
             except OSError as e:
-                print("Following error occurred: {e}")
+                logging.error(f"Following error occurred: {e}")
 
     def copy_pod5_files_to_intermediate_folder(self, input_path, pod5_directory_path, new_files):
         # if previous set of pod5 files exist then delete them

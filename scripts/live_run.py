@@ -50,14 +50,14 @@ def run():
 
     if sturgeon_output_directory != utils.empty_string:
         output_csv = utils.get_latest_file(sturgeon_output_directory, extension='.csv')
-        logging.info("Output File: ", output_csv, "\n")
+        logging.info(f"\nOutput File: {output_csv} \n")
         output_df = pd.read_csv(output_csv)
         output_df = output_df.drop('number_probes', axis=1)
         max_column = output_df.apply(lambda row: row.idxmax(), axis=1)[0]
         max_score = output_df.max(axis=1)[0]
-        logging.info("Final Prediction: \n")
-        logging.info("Tumor Type: ", max_column)
-        logging.info("\nClassification Confidence Score: ", max_score)
+        logging.info("\nFinal Prediction: \n")
+        logging.info(f"\nTumor Type: {max_column} \n")
+        logging.info(f"\nClassification Confidence Score: {max_score} \n")
         logging.info(stages.stage_separator)
 
     logging.info("\nCompleted Intraoperative Classification Pipeline!!!\n")
