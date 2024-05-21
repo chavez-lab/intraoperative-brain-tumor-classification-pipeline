@@ -18,7 +18,6 @@ def sort_key(file_name):
 
 
 def run():
-
     utils = Utils()
     input_utils = InputUtils()
     cli_inputs = input_utils.get_file_transfer_inputs()

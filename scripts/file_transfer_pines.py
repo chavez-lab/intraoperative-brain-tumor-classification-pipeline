@@ -10,7 +10,6 @@ from utils.Utils import Utils
 
 
 def run():
-
     utils = Utils()
     input_utils = InputUtils()
     cli_inputs = input_utils.get_file_transfer_pines_inputs()
