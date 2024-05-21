@@ -19,21 +19,22 @@ def run():
     logging.info("\nStarting Files Transfer to Pines...\n")
     logging.info(utils.stage_separator)
 
+    files_path = utils.get_target_directory_path(cli_inputs.local_files_path, 'pod5')
     pipeline_run_count = 0
     existing_files_input_folder = set()
     while True:
         logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.wait_time))
-        new_files_input_folder, existing_files_input_folder = utils.new_file_checker(cli_inputs.local_files_path,
+        new_files_input_folder, existing_files_input_folder = utils.new_file_checker(files_path,
                                                                                      existing_files_input_folder,
                                                                                      cli_inputs.wait_time)
 
         if new_files_input_folder:
             for file in new_files_input_folder:
                 if file != ".DS_Store":
-                    new_file = cli_inputs.local_files_path + "/" + file
+                    new_file = files_path + "/" + file
                     logging.info(f'New file {str(new_file)}\n')
                     utils.scp_with_password(new_file, cli_inputs.remote_host, cli_inputs.remote_directory,
-                                            cli_inputs.username, cli_inputs.password)
+                                            cli_inputs.username, cli_inputs.password, cli_inputs.scp_timeout)
 
         elif pipeline_run_count < cli_inputs.max_wait_runs:
             pipeline_run_count += 1

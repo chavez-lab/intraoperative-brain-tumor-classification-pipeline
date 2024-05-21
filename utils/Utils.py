@@ -85,9 +85,19 @@ class Utils:
         for new_files_path in new_files_paths:
             shutil.copy2(new_files_path, pod5_directory_path)
 
-    def scp_with_password(self, local_file, remote_host, remote_directory, username, password):
+    def get_target_directory_path(self, input_folder_path, target_folder_name):
+        try:
+            for root, dirs, files in os.walk(input_folder_path):
+                if target_folder_name in dirs:
+                    return os.path.join(root, target_folder_name)
+        except OSError as e:
+            logging.info(f'Could not find pod5 folder, error: {e}\n')
+
+        return None
+
+    def scp_with_password(self, local_file, remote_host, remote_directory, username, password, timeout):
         scp_command = f'scp {local_file} {username}@{remote_host}:{remote_directory}'
-        scp_process = pexpect.spawn(scp_command)
+        scp_process = pexpect.spawn(scp_command, timeout=timeout)
 
         try:
             logging.info(f'Starting file transfer of {str(local_file)}\n')

@@ -165,16 +165,16 @@ class InputUtils:
             help='Wait time in seconds between each batch file transfer'
         )
         parser.add_argument(
-            "--batch_size",
-            type=int,
-            default=1,
-            help='Number of files to be transferred in each batch'
-        )
-        parser.add_argument(
             '--max_wait_runs',
             type=int,
             default=1,
             help='Set the number of maximum runs to wait before stopping the pipeline'
+        )
+        parser.add_argument(
+            '--scp_timeout',
+            type=int,
+            default=300,
+            help='Set the timeout in seconds for the scp command'
         )
         args = parser.parse_args()
         return args
