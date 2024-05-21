@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 import logging
+import pexpect
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -83,3 +84,18 @@ class Utils:
         new_files_paths = [input_path + "/" + new_file for new_file in new_files if new_file != ".DS_Store"]
         for new_files_path in new_files_paths:
             shutil.copy2(new_files_path, pod5_directory_path)
+
+    def scp_with_password(self, local_file, remote_host, remote_directory, username, password):
+        scp_command = f'scp {local_file} {username}@{remote_host}:{remote_directory}'
+        scp_process = pexpect.spawn(scp_command)
+
+        try:
+            logging.info(f'Starting file transfer of {str(local_file)}\n')
+            scp_process.expect('password:')
+            scp_process.sendline(password)
+            scp_process.expect(pexpect.EOF)
+            logging.info(f'{str(local_file)} transferred to pines successfully\n')
+        except pexpect.EOF:
+            logging.info('SCP process ended unexpectedly\n')
+        except pexpect.TIMEOUT:
+            logging.info('SCP process timed out\n')

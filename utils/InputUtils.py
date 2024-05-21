@@ -122,3 +122,59 @@ class InputUtils:
         )
         args = parser.parse_args()
         return args
+
+    def get_file_transfer_pines_inputs(self):
+        parser = argparse.ArgumentParser(prog="File transfer pines script",
+                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        parser.set_defaults(func=lambda _: parser.print_help())
+        parser.add_argument(
+            "--local_files_path",
+            type=str,
+            required=True,
+            help='Path to directory which contain files to be transferred'
+        )
+        parser.add_argument(
+            "--remote_host",
+            type=str,
+            default='10.1.68.230',
+            help='IP address of remote server'
+        )
+        parser.add_argument(
+            "--remote_directory",
+            type=str,
+            required=True,
+            help='Destination directory path on remote server'
+        )
+        parser.add_argument(
+            "--username",
+            type=str,
+            required=True,
+            help='Username on remote server'
+        )
+        parser.add_argument(
+            "--password",
+            type=str,
+            required=True,
+            help='Login password for remote server'
+        )
+        parser.add_argument(
+            "--wait_time",
+            type=int,
+            default=10,
+            help='Wait time in seconds between each batch file transfer'
+        )
+        parser.add_argument(
+            "--batch_size",
+            type=int,
+            default=1,
+            help='Number of files to be transferred in each batch'
+        )
+        parser.add_argument(
+            '--max_wait_runs',
+            type=int,
+            default=1,
+            help='Set the number of maximum runs to wait before stopping the pipeline'
+        )
+        args = parser.parse_args()
+        return args
