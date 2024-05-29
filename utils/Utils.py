@@ -3,6 +3,8 @@ import shutil
 import time
 import logging
 import pexpect
+import pandas as pd
+import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -109,3 +111,22 @@ class Utils:
             logging.info('SCP process ended unexpectedly\n')
         except pexpect.TIMEOUT:
             logging.info('SCP process timed out\n')
+
+    def generate_confidence_score_variation_plot(self, folder_path):
+        dfs = []
+        for file in os.listdir(folder_path):
+            if file.endswith('.csv'):
+                file_path = os.path.join(folder_path, file)
+                df = pd.read_csv(file_path)
+                dfs.append(df)
+
+        combined_df = pd.concat(dfs, ignore_index=True)
+        df = combined_df.drop(columns=['number_probes'])
+        tumor_type = df.iloc[-1].idxmax()
+        num_probes = combined_df['number_probes'].tolist()
+        confidence_scores = combined_df[tumor_type].tolist()
+        plt.plot(num_probes, confidence_scores, marker='o')
+        plt.xlabel('Number of measured probes')
+        plt.ylabel('Sturgeon Confidence Score')
+        plt.title(tumor_type)
+        plt.savefig(folder_path + 'confidence_score_vs_num_probes.png')

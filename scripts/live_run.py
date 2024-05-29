@@ -63,6 +63,7 @@ def run():
         logging.info(f"\nTumor Type: {max_column} \n")
         logging.info(f"\nClassification Confidence Score: {max_score} \n")
         logging.info(stages.stage_separator)
+        utils.generate_confidence_score_variation_plot(sturgeon_output_directory)
 
     logging.info("\nCompleted Intraoperative Classification Pipeline!!!\n")
 

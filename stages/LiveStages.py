@@ -42,11 +42,6 @@ class LiveStages:
         pod5_files_count = os.listdir(pod5_folder_path)
 
         logging.info("Basecalling with Dorado on {} pod5 files...\n".format(pod5_files_count))
-        # logging.info("Downloading relevant models for Dorado")
-        # subprocess.run([self.dorado_path, "download", "--model",
-                        # "dna_r10.4.1_e8.2_400bps_hac@v4.1.0"], check=True)
-        # subprocess.run([self.dorado_path, "download", "--model",
-                        # "dna_r10.4.1_e8.2_400bps_hac@v4.1.0_5mCG_5hmCG@v2"], check=True)
 
         self.utils.create_directory(path=self.bam_files_directory)
         bam_files_path = self.bam_files_directory + "basecalled_" + str(self.bam_file_count) + ".bam"
