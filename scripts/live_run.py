@@ -15,8 +15,9 @@ def run():
     utils = Utils()
     input_utils = InputUtils()
     cli_inputs = input_utils.parse_command_inputs()
+    files_path = utils.get_target_directory_path(cli_inputs.input_path, 'pod5')
 
-    stages = LiveStages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path, cli_inputs.model_path,
+    stages = LiveStages(files_path, cli_inputs.output_path, cli_inputs.dorado_path, cli_inputs.model_path,
                         cli_inputs.model_type, cli_inputs.reference_path, cli_inputs.modkit_path,
                         cli_inputs.last_k_predictions)
 
@@ -24,14 +25,14 @@ def run():
     logging.info("\nStarting Intraoperative Classification Pipeline...\n")
     logging.info(stages.stage_separator)
 
-    logging.info('Watching the following folder for input: {}\n'.format(cli_inputs.input_path))
+    logging.info('Watching the following folder for input: {}\n'.format(files_path))
 
     sturgeon_output_directory = utils.empty_string
     pipeline_run_count = 0
     existing_files_input_folder = set()
     while True:
         logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
-        new_files_input_folder, existing_files_input_folder = utils.new_file_checker(cli_inputs.input_path,
+        new_files_input_folder, existing_files_input_folder = utils.new_file_checker(files_path,
                                                                                      existing_files_input_folder,
                                                                                      cli_inputs.file_wait_time)
 
@@ -43,6 +44,7 @@ def run():
             stages.live_convert_bam_files_to_modkit_txt(latest_bam_file_path)
             stages.live_convert_modkit_txt_to_bed()
             sturgeon_output_directory = stages.run_sturgeon_predict()
+            pipeline_run_count = 0
         elif pipeline_run_count < cli_inputs.max_wait_runs:
             pipeline_run_count += 1
         else:
