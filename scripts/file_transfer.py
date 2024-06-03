@@ -26,8 +26,9 @@ def run():
     logging.info("\nStarting Files Transfer...\n")
     logging.info(utils.stage_separator)
 
-    input_files = sorted(os.listdir(cli_inputs.input_path), key=sort_key)
-    logging.info('\nFound {} files in {} folder\n'.format(len(input_files), cli_inputs.input_path))
+    files_path = utils.get_target_directory_path(cli_inputs.input_path, 'pod5')
+    input_files = sorted(os.listdir(files_path), key=sort_key)
+    logging.info('\nFound {} pod5 files in {} folder\n'.format(len(input_files), files_path))
     utils.create_directory(cli_inputs.output_path)
     logging.info(utils.stage_separator)
 
@@ -36,7 +37,7 @@ def run():
         for _ in range(iters):
             try:
                 file = input_files.pop()
-                file_path = os.path.join(cli_inputs.input_path, file)
+                file_path = os.path.join(files_path, file)
                 shutil.copy2(file_path, cli_inputs.output_path)
             except Exception as e:
                 logging.info(e)
