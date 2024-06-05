@@ -24,7 +24,7 @@ def run():
     pipeline_run_count = 0
     existing_files_input_folder = set()
     while True:
-        if utils.new_file_checker(files_path, existing_files_input_folder, cli_inputs.file_wait_time):
+        if utils.new_file_checker(files_path, existing_files_input_folder, cli_inputs.wait_time):
             logging.info("Detected new pod5 files.")
             new_files_input_folder, existing_files_input_folder = utils.new_file_checker(files_path,
                                                                                          existing_files_input_folder,
