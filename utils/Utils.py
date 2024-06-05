@@ -59,11 +59,19 @@ class Utils:
             except OSError:
                 logging.error("\nError while deleting old sturgeon output files.\n")
 
-    def new_file_checker(self, input_folder_path, existing_files, wait_time):
-        time.sleep(wait_time)
+    def new_file_checker(self, input_folder_path, existing_files, wait_time=None, return_files=False):
+        if wait_time:
+            if return_files:
+                logging.info("Waiting {} seconds for new sequencing reads (pod5 files) to be written completely"
+                             .format(wait_time))
+            else:
+                logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(wait_time))
+            time.sleep(wait_time)
         current_files = set(os.listdir(input_folder_path))
         new_files = current_files - existing_files
-        return new_files, current_files
+        if return_files:
+            return new_files, current_files
+        return True if new_files else False
 
     def rename_files(self, files, file_num):
         for file in files:

@@ -10,6 +10,8 @@ from utils.InputUtils import InputUtils
 from utils.Utils import Utils
 from stages.LiveStages import LiveStages
 
+file_writing_wait_time = 300
+
 
 def run():
     utils = Utils()
@@ -31,20 +33,23 @@ def run():
     pipeline_run_count = 0
     existing_files_input_folder = set()
     while True:
-        logging.info("Waiting {} seconds for new sequencing reads (pod5 files)".format(cli_inputs.file_wait_time))
-        new_files_input_folder, existing_files_input_folder = utils.new_file_checker(files_path,
-                                                                                     existing_files_input_folder,
-                                                                                     cli_inputs.file_wait_time)
+        if utils.new_file_checker(files_path, existing_files_input_folder, cli_inputs.file_wait_time):
+            logging.info("Detected new pod5 files.")
+            new_files_input_folder, existing_files_input_folder = utils.new_file_checker(files_path,
+                                                                                         existing_files_input_folder,
+                                                                                         file_writing_wait_time,
+                                                                                         return_files=True)
 
-        if new_files_input_folder:
-            latest_bam_file_path = ""
-            if cli_inputs.perform_basecalling:
-                latest_bam_file_path = stages.live_basecalling_with_dorado(new_files_input_folder)
+            if new_files_input_folder:
+                latest_bam_file_path = ""
+                if cli_inputs.perform_basecalling:
+                    latest_bam_file_path = stages.live_basecalling_with_dorado(new_files_input_folder)
 
-            stages.live_convert_bam_files_to_modkit_txt(latest_bam_file_path)
-            stages.live_convert_modkit_txt_to_bed()
-            sturgeon_output_directory = stages.run_sturgeon_predict()
-            pipeline_run_count = 0
+                stages.live_convert_bam_files_to_modkit_txt(latest_bam_file_path)
+                stages.live_convert_modkit_txt_to_bed()
+                sturgeon_output_directory = stages.run_sturgeon_predict()
+                pipeline_run_count = 0
+
         elif pipeline_run_count < cli_inputs.max_wait_runs:
             pipeline_run_count += 1
         else:
