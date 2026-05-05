@@ -1,10 +1,11 @@
+import os
 import subprocess
 
 from utils.Utils import Utils
 
 
 class Stages:
-    def __init__(self, input_path, output_path, dorado_path):
+    def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type, modkit_path=""):
         self.input_path = input_path
         self.output_path = output_path
         self.dorado_path = dorado_path
@@ -16,6 +17,11 @@ class Stages:
         self.bam_files_directory = self.output_path + "/bam_files/"
         self.modkit_files_directory = self.output_path + "/modkit_files/"
         self.bed_files_directory = self.output_path + "/bed_files/"
+        self.sturgeon_model = os.path.join(sturgeon_model_path, sturgeon_model_type + ".zip")
+        self.modkit_path = modkit_path
+        self.sturgeon_output_directory = self.output_path + "/test_outputs/results/"
+
+
 
     def convert_to_multi_read_fast5(self):
         """
@@ -62,11 +68,11 @@ class Stages:
         print("Basecalling with Dorado on pod5 files...\n")
         print("Downloading relevant models for Dorado")
         subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v4.1.0"], check=True)
+                        "dna_r10.4.1_e8.2_400bps_hac@v5.2.0"], check=True)
         subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v4.1.0_5mCG_5hmCG@v2"], check=True)
+                        "dna_r10.4.1_e8.2_400bps_hac@v5.2.0_5mCG_5hmCG@v2"], check=True)
 
-        pod5_files_path = self.output_path + "/dna_r10.4.1_e8.2_400bps_4khz/"
+        pod5_files_path = self.input_path
         bam_files_directory = self.output_path + "/test_outputs/"
         self.utils.create_directory(path=bam_files_directory)
         bam_files_path = bam_files_directory + "calls_4khz.bam"
@@ -113,9 +119,14 @@ class Stages:
         """
 
         print("Running Sturgeon Predict...\n")
-        subprocess.run(["sturgeon", "predict", "-i", "/Users/chinmaysharma/Documents/sturgeon/demo/bed", "-o",
-                        "/Users/chinmaysharma/Documents/sturgeon/demo/bed/results/", "--model-files",
-                        "/Users/chinmaysharma/Documents/sturgeon/sturgeon/include/models/general.zip",
-                        "--plot-results"], check=True)
+        self.utils.create_directory(path=self.sturgeon_output_directory)
+        subprocess.run([
+            "sturgeon", "predict",
+            "-i", self.output_path + "/test_outputs/",
+            "-o", self.sturgeon_output_directory,
+            "--model-files", self.sturgeon_model,
+            "--plot-results",
+        ], check=True)
+
 
         print(self.stage_separator)
