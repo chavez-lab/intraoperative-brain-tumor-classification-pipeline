@@ -5,7 +5,7 @@ from utils.Utils import Utils
 
 
 class Stages:
-    def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type, modkit_path=""):
+    def __init__(self, input_path, output_path, dorado_path, sturgeon_model_path, sturgeon_model_type, reference_path, modkit_path=""):
         self.input_path = input_path
         self.output_path = output_path
         self.dorado_path = dorado_path
@@ -18,6 +18,7 @@ class Stages:
         self.modkit_files_directory = self.output_path + "/modkit_files/"
         self.bed_files_directory = self.output_path + "/bed_files/"
         self.sturgeon_model = os.path.join(sturgeon_model_path, sturgeon_model_type + ".zip")
+        self.reference_path = reference_path
         self.modkit_path = modkit_path
         self.sturgeon_output_directory = self.output_path + "/test_outputs/results/"
 
@@ -60,25 +61,49 @@ class Stages:
 
     def basecalling_with_dorado(self):
         """
-        Perform modified basecalling on pod5 files using ONT's Dorado basecaller.
-        Download relevant models for basecalling.
-        :return: bam files
+        Perform modified basecalling on pod5 files using ONT's Dorado basecaller,
+        then align the BAM to the reference so modkit can report genomic coordinates.
         """
 
         print("Basecalling with Dorado on pod5 files...\n")
         print("Downloading relevant models for Dorado")
-        subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v5.2.0"], check=True)
-        subprocess.run([self.dorado_path, "download", "--model",
-                        "dna_r10.4.1_e8.2_400bps_hac@v5.2.0_5mCG_5hmCG@v2"], check=True)
+
+        subprocess.run([
+            self.dorado_path, "download", "--model",
+            "dna_r10.4.1_e8.2_400bps_hac@v5.2.0"
+        ], check=True)
+
+        subprocess.run([
+            self.dorado_path, "download", "--model",
+            "dna_r10.4.1_e8.2_400bps_hac@v5.2.0_5mCG_5hmCG@v2"
+        ], check=True)
 
         pod5_files_path = self.input_path
         bam_files_directory = self.output_path + "/test_outputs/"
         self.utils.create_directory(path=bam_files_directory)
-        bam_files_path = bam_files_directory + "calls_4khz.bam"
 
-        basecall_cmd = " ".join([self.dorado_path, "basecaller", "hac,5mCG_5hmCG", pod5_files_path, ">", bam_files_path])
+        unaligned_bam_path = bam_files_directory + "calls_4khz_unaligned.bam"
+        aligned_bam_path = bam_files_directory + "calls_4khz.bam"
+
+        basecall_cmd = " ".join([
+            self.dorado_path,
+            "basecaller",
+            "hac,5mCG_5hmCG",
+            pod5_files_path,
+            ">",
+            unaligned_bam_path
+        ])
         subprocess.run(basecall_cmd, shell=True, check=True)
+
+        align_cmd = " ".join([
+            self.dorado_path,
+            "aligner",
+            self.reference_path,
+            unaligned_bam_path,
+            ">",
+            aligned_bam_path
+        ])
+        subprocess.run(align_cmd, shell=True, check=True)
 
         print(self.stage_separator)
 
@@ -93,7 +118,7 @@ class Stages:
         txt_files_path = self.output_path + "/test_outputs/calls_4khz.txt"
 
         subprocess.run(
-            ["modkit", "extract", bam_files_path, txt_files_path], check=True)
+            ["modkit", "extract", "full", "--force", bam_files_path, txt_files_path], check=True)
 
         print(self.stage_separator)
 
