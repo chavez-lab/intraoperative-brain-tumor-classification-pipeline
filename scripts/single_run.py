@@ -10,7 +10,15 @@ def run():
     cli_inputs = input_utils.parse_command_inputs()
 
     # Execute stages of pipeline
-    stages = Stages(cli_inputs.input_path, cli_inputs.output_path, cli_inputs.dorado_path)
+    stages = Stages(
+        cli_inputs.input_path,
+        cli_inputs.output_path,
+        cli_inputs.dorado_path,
+        cli_inputs.model_path,
+        cli_inputs.model_type,
+        cli_inputs.reference_path,
+        cli_inputs.modkit_path
+    )
 
     converted_single_to_multi_read_fast5 = False
     if cli_inputs.single_to_multi_read_fast5:

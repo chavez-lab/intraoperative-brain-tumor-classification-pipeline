@@ -29,7 +29,7 @@ cd intraoperative-brain-tumor-classification-pipeline
 python3 setup.py install
 ```
 
-Command to run the pipeline:
+Command to run the pipeline live_run:
 ```commandline
 python3 <path_to_scripts_directory>/live_run.py \
 --input_path <path_to_pod5_files_on_local_system> \
@@ -41,6 +41,20 @@ python3 <path_to_scripts_directory>/live_run.py \
 --modkit_path <path_to_modkit_on_local_system> \
 --perform_basecalling \
 --file_wait_time <wait_time_in_seconds> \
+--last_k_predictions <integer_value>
+```
+
+Command to run the pipeline single_run:
+```commandline
+python3 <path_to_scripts_directory>/single_run.py \
+--input_path <path_to_pod5_files_on_local_system> \
+--output_path <path_to_output_folder_on_local_system> \
+--dorado_path <path_to_dorado_basecaller_on_local_system> \
+--model_path <path_to_folder_containing_model> \
+--model_type <general_or_brainstem> \
+--reference_path <path_to_chm13v2.0.fa.gz_file> \
+--modkit_path <path_to_modkit_on_local_system> \
+--perform_basecalling \
 --last_k_predictions <integer_value>
 ```
 
